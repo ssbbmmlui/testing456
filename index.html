@@ -3,25 +3,64 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#f6f3ec">
-<meta name="description" content="WordLab 單詞工坊 — 用間隔重複法學習英文單詞，自動記錄進度並出題測驗。">
-<title>WordLab 單詞工坊 · 英文單詞學習</title>
+<meta name="theme-color" content="#f7f4ee">
+<title>WordLab 單詞工坊 — 用間隔重複記住英文單詞</title>
+<meta name="description" content="WordLab 是一套免費、免註冊的英文單詞學習系統：496 個分級單詞、間隔重複排程、五種測驗模式與完整進度記錄。純前端運作，學習資料只留在你的裝置。">
+<meta name="keywords" content="英文單詞,背單詞,間隔重複,spaced repetition,英文學習,單詞卡,IELTS,TOEFL,WordLab">
+<link rel="canonical" href="https://ssbbmmlui.github.io/testing456/">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="manifest" href="site.webmanifest">
-<link rel="stylesheet" href="css/style.css">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="WordLab 單詞工坊">
+<meta property="og:locale" content="zh_HK">
+<meta property="og:title" content="WordLab 單詞工坊 — 用間隔重複記住英文單詞">
+<meta property="og:description" content="496 個分級單詞、間隔重複排程、五種測驗模式、完整進度記錄。免費、免註冊，學習資料只存本機。">
+<meta property="og:url" content="https://ssbbmmlui.github.io/testing456/">
+<meta property="og:image" content="https://ssbbmmlui.github.io/testing456/docs/screenshots/05-stats.png">
+<meta property="og:image:alt" content="WordLab 進度儀表板">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="WordLab 單詞工坊 — 用間隔重複記住英文單詞">
+<meta name="twitter:description" content="496 個分級單詞、五種測驗模式、完整進度記錄。免費、免註冊、資料只存本機。">
+<meta name="twitter:image" content="https://ssbbmmlui.github.io/testing456/docs/screenshots/05-stats.png">
+
+<link rel="stylesheet" href="css/site.css">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "WordLab 單詞工坊",
+  "alternateName": "WordLab",
+  "applicationCategory": "EducationalApplication",
+  "applicationSubCategory": "Language Learning",
+  "operatingSystem": "Any modern web browser (Chrome, Edge, Safari, Firefox)",
+  "url": "https://ssbbmmlui.github.io/testing456/",
+  "description": "以間隔重複法學習英文單詞的網頁應用，內建 496 個分級單詞、五種測驗模式、進度儀表板與本機資料儲存。",
+  "inLanguage": "zh-Hant",
+  "isAccessibleForFree": true,
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "HKD" },
+  "license": "https://opensource.org/licenses/MIT",
+  "featureList": [
+    "間隔重複（SM-2 變體）複習排程",
+    "496 個單詞，四個難度等級",
+    "五種測驗模式：混合、看詞選義、看義選詞、拼寫、聽力",
+    "進度儀表板：連續天數、掌握度、12 週學習足跡",
+    "瀏覽器語音發音（美式／英式）",
+    "進度匯出／匯入 JSON",
+    "資料只儲存在瀏覽器本機"
+  ]
+}
+</script>
 </head>
 <body>
 
-<div class="bg-orbs" aria-hidden="true">
-  <span class="orb orb-a"></span>
-  <span class="orb orb-b"></span>
-</div>
+<a class="skip-link" href="#main">跳至主要內容</a>
 
-<div class="app">
-
-  <!-- ══════════ Header ══════════ -->
-  <header class="topbar">
-    <a class="brand" href="#" id="brandHome">
+<!-- ══════════════════ NAV ══════════════════ -->
+<header class="site-nav" id="siteNav">
+  <div class="nav-inner">
+    <a class="nav-brand" href="index.html" aria-label="WordLab 首頁">
       <span class="brand-mark" aria-hidden="true">W</span>
       <span class="brand-text">
         <strong>WordLab</strong>
@@ -29,122 +68,582 @@
       </span>
     </a>
 
-    <div class="topbar-right">
-      <div class="streak-pill" id="streakPill" title="連續學習天數">
-        <span class="streak-flame" aria-hidden="true">🔥</span>
-        <span id="streakCount">0</span>
-        <span class="streak-unit">天</span>
-      </div>
-      <button class="icon-btn" id="settingsBtn" type="button" aria-label="設定" title="設定">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
-          <circle cx="12" cy="12" r="3.2"></circle>
-          <path d="M19.4 15a1.6 1.6 0 0 0 .32 1.77l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.6 1.6 0 0 0-1.77-.32 1.6 1.6 0 0 0-1 1.46V21a2 2 0 1 1-4 0v-.1a1.6 1.6 0 0 0-1-1.46 1.6 1.6 0 0 0-1.77.32l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.6 1.6 0 0 0 4.6 15a1.6 1.6 0 0 0-1.46-1H3a2 2 0 1 1 0-4h.1a1.6 1.6 0 0 0 1.46-1 1.6 1.6 0 0 0-.32-1.77l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.6 1.6 0 0 0 9 4.6a1.6 1.6 0 0 0 1-1.46V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.46 1.6 1.6 0 0 0 1.77-.32l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.6 1.6 0 0 0-.32 1.77V9a1.6 1.6 0 0 0 1.46 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.46 1z"></path>
-        </svg>
-      </button>
-    </div>
-  </header>
+    <nav class="nav-links" aria-label="網站導覽">
+      <a href="#features">產品特色</a>
+      <a href="#how">運作方式</a>
+      <a href="#levels">難度分級</a>
+      <a href="#screens">介面預覽</a>
+      <a href="#faq">常見問題</a>
+    </nav>
 
-  <!-- ══════════ Nav ══════════ -->
-  <nav class="tabs" aria-label="主要功能">
-    <a class="tab" href="#/learn" data-tab="learn">
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H19v16H5.5A1.5 1.5 0 0 1 4 18.5z"></path><path d="M8 4v16"></path><path d="M12 8h4M12 12h4"></path></svg>
-      <span>學習</span>
-    </a>
-    <a class="tab" href="#/quiz" data-tab="quiz">
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 9a3 3 0 1 1 4.6 2.5c-.9.6-1.6 1.2-1.6 2.5"></path><circle cx="12" cy="17.5" r=".9" fill="currentColor" stroke="none"></circle><circle cx="12" cy="12" r="9"></circle></svg>
-      <span>測驗</span>
-    </a>
-    <a class="tab" href="#/stats" data-tab="stats">
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"></path></svg>
-      <span>進度</span>
-    </a>
-    <a class="tab" href="#/library" data-tab="library">
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h6v16H4zM14 4h6v16h-6zM10 8h4M10 12h4M10 16h4"></path></svg>
-      <span>單詞庫</span>
-    </a>
-  </nav>
-
-  <!-- ══════════ Views ══════════ -->
-  <main id="view" class="view" tabindex="-1"><!-- 由 app.js 渲染 --></main>
-
-  <footer class="footer">
-    <p>資料只儲存在你的瀏覽器（localStorage），不會上傳到任何伺服器。</p>
-  </footer>
-</div>
-
-<!-- ══════════ Toast ══════════ -->
-<div class="toast" id="toast" role="status" aria-live="polite"></div>
-
-<!-- ══════════ Settings dialog ══════════ -->
-<div class="overlay" id="settingsOverlay" hidden>
-  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
-    <div class="sheet-head">
-      <h2 id="settingsTitle">設定</h2>
-      <button class="icon-btn" id="settingsClose" type="button" aria-label="關閉">
-        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg>
-      </button>
-    </div>
-
-    <div class="sheet-body" id="settingsBody">
-      <div class="field">
-        <label for="setName">你的名字</label>
-        <input id="setName" type="text" maxlength="16" placeholder="學習者" autocomplete="nickname">
-      </div>
-
-      <div class="field">
-        <label>每日目標（複習 + 新詞）</label>
-        <div class="segmented" id="setGoal" role="group" aria-label="每日目標">
-          <button type="button" data-value="10">10 個</button>
-          <button type="button" data-value="20">20 個</button>
-          <button type="button" data-value="30">30 個</button>
-          <button type="button" data-value="50">50 個</button>
-        </div>
-      </div>
-
-      <div class="field">
-        <label>預設測驗模式</label>
-        <div class="segmented" id="setQuizMode" role="group" aria-label="預設測驗模式">
-          <button type="button" data-value="mixed">混合</button>
-          <button type="button" data-value="mean">看詞選義</button>
-          <button type="button" data-value="def">看義選詞</button>
-          <button type="button" data-value="spell">拼寫</button>
-        </div>
-      </div>
-
-      <div class="field">
-        <label>發音</label>
-        <div class="segmented" id="setAccent" role="group" aria-label="發音口音">
-          <button type="button" data-value="en-US">美式</button>
-          <button type="button" data-value="en-GB">英式</button>
-        </div>
-        <label class="switch-row">
-          <span>顯示單詞時自動發音</span>
-          <input type="checkbox" id="setAutoSpeak" class="switch">
-        </label>
-      </div>
-
-      <div class="field">
-        <label>資料</label>
-        <div class="btn-row">
-          <button type="button" class="btn btn-ghost" id="exportBtn">匯出進度 (JSON)</button>
-          <button type="button" class="btn btn-ghost" id="importBtn">匯入進度</button>
-          <input type="file" id="importFile" accept="application/json,.json" hidden>
-        </div>
-        <button type="button" class="btn btn-danger-ghost" id="resetBtn">重設所有學習進度</button>
-        <p class="hint">匯出後可備份到雲端；換裝置或瀏覽器時匯入即可繼續。</p>
-      </div>
-
-      <dl class="meta-info">
-        <div><dt>單詞總數</dt><dd id="metaWords">—</dd></div>
-        <div><dt>程式版本</dt><dd id="metaVersion">—</dd></div>
-      </dl>
+    <div class="nav-actions">
+      <a class="gh-link" href="https://github.com/ssbbmmlui/testing456" target="_blank" rel="noopener noreferrer" aria-label="GitHub 專案原始碼">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.73.5.5 5.73.5 12a11.5 11.5 0 0 0 7.86 10.92c.58.1.79-.25.79-.55v-1.94c-3.2.7-3.88-1.54-3.88-1.54-.52-1.34-1.28-1.7-1.28-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.7 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.79 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.12 3.05.74.81 1.18 1.84 1.18 3.1 0 4.43-2.69 5.41-5.25 5.69.41.36.78 1.06.78 2.14v3.17c0 .3.2.66.8.55A11.5 11.5 0 0 0 23.5 12C23.5 5.73 18.27.5 12 .5z"/></svg>
+        <span>GitHub</span>
+      </a>
+      <a class="btn btn-primary btn-sm" href="app.html">開始學習</a>
     </div>
   </div>
-</div>
+</header>
 
-<script src="data/words.js"></script>
-<script src="data/words-extra.js"></script>
-<script src="data/words-extra2.js"></script>
-<script src="js/app.js"></script>
+<main id="main">
+
+  <!-- ══════════════════ HERO ══════════════════ -->
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="dot" aria-hidden="true"></span>間隔重複 × 主動回想 × 自動出題</p>
+
+        <h1 class="hero-title">
+          不再背了又忘，<br>
+          用<em>對的方法</em>，<br>
+          記住每一個英文單詞
+        </h1>
+
+        <p class="hero-lead">
+          WordLab 是一套在瀏覽器就能用的英文單詞學習系統。它依你的記憶曲線安排複習，
+          用五種測驗確認你真的記住，並把每一次學習完整記錄下來——
+          <strong>毋須註冊，資料不離開你的裝置。</strong>
+        </p>
+
+        <div class="hero-actions">
+          <a class="btn btn-primary btn-lg" href="app.html">
+            立即開始學習
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+          </a>
+          <a class="btn btn-ghost btn-lg" href="#how">了解運作方式</a>
+        </div>
+
+        <ul class="hero-trust">
+          <li><span aria-hidden="true">✓</span>完全免費</li>
+          <li><span aria-hidden="true">✓</span>免註冊帳號</li>
+          <li><span aria-hidden="true">✓</span>資料只存本機</li>
+          <li><span aria-hidden="true">✓</span>開放原始碼</li>
+        </ul>
+      </div>
+
+      <div class="hero-visual">
+        <div class="phone" role="img" aria-label="WordLab 學習卡片畫面：單詞 ability 連同音標、中文釋義、例句與三個評分按鈕">
+          <div class="phone-screen">
+            <img src="docs/screenshots/mobile-02-card-back.png" alt="" width="585" height="1266" loading="eager" decoding="async">
+          </div>
+        </div>
+        <div class="float-chip chip-a">
+          <span class="chip-icon" aria-hidden="true">🔊</span>
+          <span>真人語音發音</span>
+        </div>
+        <div class="float-chip chip-b">
+          <span class="chip-icon ok" aria-hidden="true">✓</span>
+          <span>下次複習：3 天後</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="wrap">
+      <dl class="stat-strip">
+        <div><dt>單詞總數</dt><dd>496<small>個</small></dd></div>
+        <div><dt>難度等級</dt><dd>4<small>級</small></dd></div>
+        <div><dt>測驗模式</dt><dd>5<small>種</small></dd></div>
+        <div><dt>資料上傳</dt><dd>0<small>筆</small></dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <!-- ══════════════════ PROBLEM ══════════════════ -->
+  <section class="section section-problem" id="problem">
+    <div class="wrap">
+      <header class="section-head center">
+        <p class="eyebrow">常見困境</p>
+        <h2 class="section-title">單詞背了很多，<br class="br-sm">真正記住的卻很少</h2>
+        <p class="section-lead">
+          問題通常不在於你不夠努力，而在於「背」的方式沒有配合大腦的遺忘規律。
+        </p>
+      </header>
+
+      <div class="grid-3">
+        <article class="card problem-card">
+          <span class="problem-num" aria-hidden="true">01</span>
+          <h3>一次背太多，複習卻很少</h3>
+          <p>一天硬塞五十個新詞，兩天後只剩下幾個。沒有複習排程，等於每次都要從零開始。</p>
+        </article>
+        <article class="card problem-card">
+          <span class="problem-num" aria-hidden="true">02</span>
+          <h3>「認得」不等於「記得」</h3>
+          <p>看著眼熟，但要你講出意思或拼出來就想不起來。沒有測驗，就不知道自己真正的掌握程度。</p>
+        </article>
+        <article class="card problem-card">
+          <span class="problem-num" aria-hidden="true">03</span>
+          <h3>看不見進度，很快放棄</h3>
+          <p>不知道自己是在進步，還是原地踏步。沒有累積感，學習就很難撐過第三個星期。</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════ FEATURES ══════════════════ -->
+  <section class="section" id="features">
+    <div class="wrap">
+      <header class="section-head">
+        <p class="eyebrow">產品特色</p>
+        <h2 class="section-title">六個設計，讓每一次學習<br class="br-sm">都算數</h2>
+        <p class="section-lead">
+          WordLab 把「記憶科學」變成你每天真的會用的操作：翻一張卡、按一個評分、看一次進度。
+        </p>
+      </header>
+
+      <div class="grid-3 feature-grid">
+        <article class="card feature-card">
+          <span class="feature-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 9 9"/><path d="M12 7v5l3 2"/><path d="M17 3l4 4-4 4"/></svg>
+          </span>
+          <h3>間隔重複排程</h3>
+          <p>在你「快要忘記」的時候安排複習。忘記了，十分鐘後再見；記住了，間隔從 1 天、3 天一路延長，把時間留給真正生疏的詞。</p>
+          <ul class="feature-list">
+            <li>三種評分：忘記 / 普通 / 熟記</li>
+            <li>間隔自動調整，不需手動排課表</li>
+          </ul>
+        </article>
+
+        <article class="card feature-card">
+          <span class="feature-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 9a3 3 0 1 1 4.6 2.5c-.9.6-1.6 1.2-1.6 2.5"/><circle cx="12" cy="17.5" r=".9" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="9"/></svg>
+          </span>
+          <h3>五種測驗模式</h3>
+          <p>同一個詞，用不同角度考你：看詞選義、看義選詞、拼寫、聽力，以及四種混合的挑戰模式。答錯的詞會自動排回複習佇列。</p>
+          <ul class="feature-list">
+            <li>每次 10／20／30 題</li>
+            <li>作答後即時對答案、看例句</li>
+          </ul>
+        </article>
+
+        <article class="card feature-card">
+          <span class="feature-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>
+          </span>
+          <h3>看得見的進度</h3>
+          <p>連續學習天數、已掌握單詞、正確率、難度分布，加上近 14 天複習量與 12 週學習足跡，讓你清楚知道自己在哪裡。</p>
+          <ul class="feature-list">
+            <li>間隔 ≥ 21 天即視為「已掌握」</li>
+            <li>每次測驗自動留下紀錄</li>
+          </ul>
+        </article>
+
+        <article class="card feature-card">
+          <span class="feature-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H19v16H5.5A1.5 1.5 0 0 1 4 18.5z"/><path d="M8 4v16"/><path d="M12 9h4M12 13h4"/></svg>
+          </span>
+          <h3>496 個分級單詞</h3>
+          <p>由日常高頻字一路到學術寫作詞彙，每個單詞都有美式音標、詞性、中英釋義與例句，另可按難度或狀態篩選。</p>
+          <ul class="feature-list">
+            <li>基礎 151 · 中階 210 · 進階 75 · 高階 60</li>
+            <li>可指定只學某一難度</li>
+          </ul>
+        </article>
+
+        <article class="card feature-card">
+          <span class="feature-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14v-2a8 8 0 0 1 16 0v2"/><path d="M4 14a2 2 0 0 1 2-2h1v6H6a2 2 0 0 1-2-2zM20 14a2 2 0 0 0-2-2h-1v6h1a2 2 0 0 0 2-2z"/></svg>
+          </span>
+          <h3>發音與聽力練習</h3>
+          <p>用瀏覽器內建語音朗讀單詞，可切換美式或英式口音，並直接以「聽力測驗」模式練習——先聽聲音，再選出意思。</p>
+          <ul class="feature-list">
+            <li>點一下就聽得到</li>
+            <li>可設定顯示單詞時自動發音</li>
+          </ul>
+        </article>
+
+        <article class="card feature-card">
+          <span class="feature-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.2-2.9 7.6-7 9-4.1-1.4-7-4.8-7-9V6z"/><path d="M9 12l2 2 4-4"/></svg>
+          </span>
+          <h3>資料留在你的裝置</h3>
+          <p>沒有帳號、沒有後端伺服器。所有進度存在瀏覽器的 localStorage，並可隨時匯出成 JSON 備份，換裝置時匯入即可繼續。</p>
+          <ul class="feature-list">
+            <li>不需要登入或提供電郵</li>
+            <li>匯出／匯入進度，完全可控</li>
+          </ul>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════ HOW IT WORKS ══════════════════ -->
+  <section class="section section-alt" id="how">
+    <div class="wrap">
+      <header class="section-head">
+        <p class="eyebrow">運作方式</p>
+        <h2 class="section-title">四個步驟，<br class="br-sm">每天十到二十分鐘</h2>
+        <p class="section-lead">不需要規劃課程，也不需要自己決定今天該複習哪些詞——系統會幫你排好。</p>
+      </header>
+
+      <ol class="steps">
+        <li class="step">
+          <span class="step-num" aria-hidden="true">1</span>
+          <div>
+            <h3>設定你的節奏</h3>
+            <p>選一個每日目標（10 / 20 / 30 / 50 個單詞），再選想從哪個難度開始。設定一次，之後都不用再想。</p>
+          </div>
+        </li>
+        <li class="step">
+          <span class="step-num" aria-hidden="true">2</span>
+          <div>
+            <h3>翻卡學習，先回想再看答案</h3>
+            <p>看到英文單詞，先在心裡想它的意思；翻面核對音標、釋義與例句，再按「忘記／普通／熟記」告訴系統你的感覺。</p>
+          </div>
+        </li>
+        <li class="step">
+          <span class="step-num" aria-hidden="true">3</span>
+          <div>
+            <h3>用測驗驗證，而不是「感覺會了」</h3>
+            <p>五種題型隨機出題。答對，間隔延長；答錯，這個詞會自動排回複習佇列，十分鐘後再出現。</p>
+          </div>
+        </li>
+        <li class="step">
+          <span class="step-num" aria-hidden="true">4</span>
+          <div>
+            <h3>看進度，微調節奏</h3>
+            <p>連續天數、掌握度與學習足跡會告訴你實際累積了多少。覺得太輕鬆就提高每日目標，太吃力就降回來。</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ══════════════════ LEVELS ══════════════════ -->
+  <section class="section" id="levels">
+    <div class="wrap">
+      <header class="section-head">
+        <p class="eyebrow">難度分級</p>
+        <h2 class="section-title">496 個單詞，<br class="br-sm">分成四個清楚的階段</h2>
+        <p class="section-lead">
+          由日常高頻字開始，逐級走到學術與寫作詞彙。你可以只學某一級，也可以讓系統由淺入深安排。
+        </p>
+      </header>
+
+      <div class="level-layout">
+        <div class="level-cards">
+          <article class="level-card level-1">
+            <div class="level-card-top">
+              <span class="pill pill-ok">基礎</span>
+              <span class="level-count">151 個</span>
+            </div>
+            <h3>日常高頻字</h3>
+            <p>應付日常閱讀與對話的骨幹詞彙，例如 <em>ability</em>、<em>improve</em>、<em>suggest</em>。</p>
+            <div class="level-bar"><span style="width:100%"></span></div>
+          </article>
+
+          <article class="level-card level-2">
+            <div class="level-card-top">
+              <span class="pill pill-gold">中階</span>
+              <span class="level-count">210 個</span>
+            </div>
+            <h3>IELTS 5.5–6.5</h3>
+            <p>書面與職場常見詞，例如 <em>approach</em>、<em>maintain</em>、<em>significant</em>。</p>
+            <div class="level-bar"><span style="width:72%"></span></div>
+          </article>
+
+          <article class="level-card level-3">
+            <div class="level-card-top">
+              <span class="pill pill-warm">進階</span>
+              <span class="level-count">75 個</span>
+            </div>
+            <h3>IELTS 6.5–7.5</h3>
+            <p>抽象概念與論述用詞，例如 <em>inevitable</em>、<em>framework</em>、<em>empirical</em>。</p>
+            <div class="level-bar"><span style="width:42%"></span></div>
+          </article>
+
+          <article class="level-card level-4">
+            <div class="level-card-top">
+              <span class="pill pill-danger">高階</span>
+              <span class="level-count">60 個</span>
+            </div>
+            <h3>學術寫作 / TOEFL 100+</h3>
+            <p>論文與評論常用詞，例如 <em>corroborate</em>、<em>dichotomy</em>、<em>ubiquitous</em>。</p>
+            <div class="level-bar"><span style="width:34%"></span></div>
+          </article>
+        </div>
+
+        <aside class="card level-note">
+          <h3>怎麼選開始的難度？</h3>
+          <ul class="tick-list">
+            <li><strong>完全新手</strong>：由「基礎」開始，先把日常字打好底。</li>
+            <li><strong>準備考試</strong>：直接選「中階」或「進階」，配合每日 20–30 個。</li>
+            <li><strong>想再上一層</strong>：選「高階」，針對論文與高階寫作詞彙。</li>
+            <li><strong>不確定</strong>：選「全部」，系統會由基礎順序安排，之後隨時可在設定中改。</li>
+          </ul>
+          <p class="note-small">難度設定只影響「新學」的單詞；已學過的複習排程不受影響。</p>
+          <a class="btn btn-primary btn-block" href="app.html">選一個難度，開始學習</a>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════ QUIZ MODES ══════════════════ -->
+  <section class="section section-alt" id="modes">
+    <div class="wrap">
+      <header class="section-head">
+        <p class="eyebrow">測驗模式</p>
+        <h2 class="section-title">真的記住了嗎？<br class="br-sm">換五種方式問你</h2>
+        <p class="section-lead">
+          認得字不等於會用。同一批單詞用不同題型反覆驗證，才能找出你其實還沒掌握的那幾個。
+        </p>
+      </header>
+
+      <div class="grid-modes">
+        <article class="mode-tile">
+          <span class="mode-badge" aria-hidden="true">混合</span>
+          <h3>混合模式</h3>
+          <p>四種題型隨機出現，最接近真實使用情境，適合日常練習。</p>
+        </article>
+        <article class="mode-tile">
+          <span class="mode-badge" aria-hidden="true">看詞選義</span>
+          <h3>看英文，選意思</h3>
+          <p>最基礎的辨識練習：看到單詞，從四個中文釋義中選出正確的。</p>
+        </article>
+        <article class="mode-tile">
+          <span class="mode-badge" aria-hidden="true">看義選詞</span>
+          <h3>看中文，選英文</h3>
+          <p>反向練習，訓練你由意思回想字形的能力，比單純認字更難。</p>
+        </article>
+        <article class="mode-tile">
+          <span class="mode-badge" aria-hidden="true">拼寫</span>
+          <h3>看意思，打出來</h3>
+          <p>直接輸入英文拼寫，系統會逐字比對並標出錯在哪裡，附提示可選。</p>
+        </article>
+        <article class="mode-tile">
+          <span class="mode-badge" aria-hidden="true">聽力</span>
+          <h3>聽發音，選意思</h3>
+          <p>只播放聲音、不顯示文字，訓練你在對話中聽懂單詞的能力。</p>
+        </article>
+        <article class="mode-tile mode-tile-accent">
+          <h3>答錯也不用怕</h3>
+          <p>每次作答後即時顯示正確答案、音標與例句；答錯的單詞會自動排回複習佇列，十分鐘後再練一次。</p>
+          <a class="link-arrow" href="app.html#/quiz">去做一次測驗 →</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════ SCREENS ══════════════════ -->
+  <section class="section" id="screens">
+    <div class="wrap">
+      <header class="section-head">
+        <p class="eyebrow">介面預覽</p>
+        <h2 class="section-title">簡潔、專注，<br class="br-sm">沒有多餘的干擾</h2>
+        <p class="section-lead">四個主要畫面：學習、測驗、進度、單詞庫。手機與桌面都能用。</p>
+      </header>
+
+      <div class="gallery">
+        <figure class="shot">
+          <div class="shot-frame"><img src="docs/screenshots/03-card-back.png" alt="學習卡片：顯示單詞 ability 的音標、中文釋義、英文例句與三個評分按鈕" loading="lazy" decoding="async" width="1500" height="1500"></div>
+          <figcaption><strong>學習</strong><span>翻卡學習，三個評分決定下次複習時間</span></figcaption>
+        </figure>
+        <figure class="shot">
+          <div class="shot-frame"><img src="docs/screenshots/07-quiz-question.png" alt="測驗畫面：看英文單詞選出正確中文意思，四個選項" loading="lazy" decoding="async" width="1500" height="1500"></div>
+          <figcaption><strong>測驗</strong><span>五種題型，即時對答案</span></figcaption>
+        </figure>
+        <figure class="shot">
+          <div class="shot-frame"><img src="docs/screenshots/05-stats.png" alt="進度頁：連續天數、已學單詞、掌握度、難度分布與複習圖表" loading="lazy" decoding="async" width="1500" height="1500"></div>
+          <figcaption><strong>進度</strong><span>掌握度、難度分布、學習足跡</span></figcaption>
+        </figure>
+        <figure class="shot">
+          <div class="shot-frame"><img src="docs/screenshots/10-library.png" alt="單詞庫：496 個單詞列表，可搜尋並依難度與狀態篩選" loading="lazy" decoding="async" width="1500" height="1500"></div>
+          <figcaption><strong>單詞庫</strong><span>496 詞可搜尋、可篩選</span></figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════ SCIENCE ══════════════════ -->
+  <section class="section section-dark" id="science">
+    <div class="wrap">
+      <div class="science-grid">
+        <div>
+          <p class="eyebrow eyebrow-light">方法原理</p>
+          <h2 class="section-title light">為什麼「間隔重複」<br>比一口氣背五十個更有效</h2>
+          <p class="section-lead light">
+            記憶在學習後會快速衰減，然後趨於平緩。第一次學完就放著，等於让它自然消失；
+            在快要忘記的那一刻再複習一次，用最少的次數換到最長的保留時間。
+          </p>
+        </div>
+
+        <ul class="science-points">
+          <li>
+            <span class="science-num" aria-hidden="true">1</span>
+            <div>
+              <h3>拉長間隔</h3>
+              <p>答對後間隔從 1 天、3 天逐步延長，複習次數少，但記得久。</p>
+            </div>
+          </li>
+          <li>
+            <span class="science-num" aria-hidden="true">2</span>
+            <div>
+              <h3>主動回想</h3>
+              <p>先自己想，再看答案。回想這個動作本身，就是最有效的記憶練習。</p>
+            </div>
+          </li>
+          <li>
+            <span class="science-num" aria-hidden="true">3</span>
+            <div>
+              <h3>即時回饋</h3>
+              <p>作答後立刻看到正確答案與例句，錯誤在遺忘之前就被修正。</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <p class="disclaimer">
+        以上為本產品所採用的學習方法說明（間隔重複與主動回想），並非對個人學習成效的保證；
+        實際進度會因起始程度、練習頻率與使用方式而異。
+      </p>
+    </div>
+  </section>
+
+  <!-- ══════════════════ FAQ ══════════════════ -->
+  <section class="section" id="faq">
+    <div class="wrap wrap-narrow">
+      <header class="section-head center">
+        <p class="eyebrow">常見問題</p>
+        <h2 class="section-title">開始之前，你可能想問</h2>
+      </header>
+
+      <div class="faq">
+        <details class="faq-item">
+          <summary>需要註冊、付費或提供電郵嗎？</summary>
+          <p>不需要。WordLab 完全免費，不需要帳號、不需要電郵，也不會要求你登入任何服務。打開網頁就能直接開始學習。</p>
+        </details>
+
+        <details class="faq-item">
+          <summary>我的學習進度存在哪裡？</summary>
+          <p>存在你目前使用的瀏覽器（localStorage）之中，不會上傳到任何伺服器。這代表只有這部裝置上的這個瀏覽器能看到你的進度。</p>
+        </details>
+
+        <details class="faq-item">
+          <summary>換電腦或換瀏覽器，進度會不見嗎？</summary>
+          <p>不會消失，但也不會自動同步。在舊裝置到「設定 → 匯出進度」下載 JSON 檔，再到新裝置「匯入進度」即可接續。建議每隔一段時間匯出一次作備份。</p>
+        </details>
+
+        <details class="faq-item">
+          <summary>手機可以用嗎？</summary>
+          <p>可以。介面採用響應式設計，手機、平板與桌面都能正常操作；在手機瀏覽器開啟後也可以「加到主畫面」，用起來更像一個 App。</p>
+        </details>
+
+        <details class="faq-item">
+          <summary>沒有網路可以用嗎？</summary>
+          <p>學習過程中的所有運算（翻卡、出題、計分、記錄）都在你的瀏覽器完成，不需要連線到伺服器。但網頁本身仍需載入一次；若想完全離線使用，可把專案下載到本機，直接開啟 <code>index.html</code>。</p>
+        </details>
+
+        <details class="faq-item">
+          <summary>發音沒有聲音怎麼辦？</summary>
+          <p>發音功能使用瀏覽器內建的語音合成（Web Speech API）。Chrome 與 Edge 支援最好；如果沒有聲音，請檢查系統音量、瀏覽器是否靜音，或改用 Chrome / Edge。不支援語音的瀏覽器會自動把聽力題改為「看詞選義」。</p>
+        </details>
+
+        <details class="faq-item">
+          <summary>可以加入自己的單詞嗎？</summary>
+          <p>可以。單詞資料是純文字檔（<code>data/words.js</code>），依相同格式加入一筆資料，重新整理頁面即可。若使用線上版本，則需要自行部署一份修改後的副本。</p>
+        </details>
+
+        <details class="faq-item">
+          <summary>這是開源專案嗎？</summary>
+          <p>是。原始碼以 MIT License 釋出，你可以自由閱讀、修改與自行部署。<a href="https://github.com/ssbbmmlui/testing456" target="_blank" rel="noopener noreferrer">在 GitHub 查看專案 →</a></p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════ FINAL CTA ══════════════════ -->
+  <section class="section cta-final">
+    <div class="wrap">
+      <div class="cta-panel">
+        <div class="cta-copy">
+          <p class="eyebrow eyebrow-light">現在開始</p>
+          <h2>今天，先記住十個單詞。</h2>
+          <p>不用註冊，不用付款。打開就能學，進度自動幫你記住。</p>
+        </div>
+        <div class="cta-actions">
+          <a class="btn btn-light btn-lg" href="app.html">
+            開始學習
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg>
+          </a>
+          <a class="btn btn-outline-light btn-lg" href="app.html#/quiz">直接做測驗</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ══════════════════ FOOTER ══════════════════ -->
+<footer class="site-footer">
+  <div class="wrap footer-grid">
+    <div class="footer-brand">
+      <a class="nav-brand" href="index.html">
+        <span class="brand-mark" aria-hidden="true">W</span>
+        <span class="brand-text"><strong>WordLab</strong><small>單詞工坊</small></span>
+      </a>
+      <p>以間隔重複法學習英文單詞的免費網頁應用。<br>496 個單詞、四個難度、五種測驗。</p>
+    </div>
+
+    <nav class="footer-col" aria-label="產品">
+      <h4>產品</h4>
+      <a href="app.html">開始學習</a>
+      <a href="#features">產品特色</a>
+      <a href="#levels">難度分級</a>
+      <a href="#screens">介面預覽</a>
+    </nav>
+
+    <nav class="footer-col" aria-label="專案">
+      <h4>專案</h4>
+      <a href="https://github.com/ssbbmmlui/testing456" target="_blank" rel="noopener noreferrer">GitHub 原始碼</a>
+      <a href="https://github.com/ssbbmmlui/testing456/blob/main/README.md" target="_blank" rel="noopener noreferrer">開發文件</a>
+      <a href="https://github.com/ssbbmmlui/testing456/blob/main/LICENSE" target="_blank" rel="noopener noreferrer">MIT License</a>
+    </nav>
+
+    <nav class="footer-col" aria-label="說明">
+      <h4>說明</h4>
+      <a href="#faq">常見問題</a>
+      <a href="#science">方法原理</a>
+      <a href="app.html">開啟應用程式</a>
+    </nav>
+  </div>
+
+  <div class="wrap footer-bottom">
+    <p>© <span id="year">2026</span> WordLab 單詞工坊 · 以 MIT License 釋出</p>
+    <p class="footer-privacy">你的學習資料只儲存在本機瀏覽器，不會上傳到任何伺服器。</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+
+  // 目前年份
+  var y = document.getElementById('year');
+  if (y) y.textContent = String(new Date().getFullYear());
+
+  // 捲動時為導覽列加上陰影
+  var nav = document.getElementById('siteNav');
+  var onScroll = function () {
+    if (!nav) return;
+    nav.classList.toggle('is-scrolled', window.scrollY > 8);
+  };
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  // 平滑捲動（尊重 prefers-reduced-motion）
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a[href^="#"]');
+    if (!a || reduce) return;
+    var id = a.getAttribute('href');
+    if (!id || id === '#') return;
+    var target = document.querySelector(id);
+    if (!target) return;
+    e.preventDefault();
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    history.replaceState(null, '', id);
+  });
+})();
+</script>
 </body>
 </html>

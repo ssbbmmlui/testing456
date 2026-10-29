@@ -3,12 +3,13 @@
  * WordLab build script
  * ------------------------------------------------------------------
  * 1. 驗證單詞資料（欄位、重複、難度分布）
- * 2. 把靜態網站輸出到 _site/（只包含部署需要的檔案）
+ * 2. 驗證兩個頁面：index.html（介紹網站）與 app.html（學習 App）
+ * 3. 把靜態網站輸出到 _site/（只包含部署需要的檔案）
  *
  * 用法：
  *   node scripts/build.mjs
  */
-import { readFileSync, writeFileSync, mkdirSync, cpSync, rmSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, cpSync, rmSync, existsSync, statSync } from 'node:fs';
 import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import vm from 'node:vm';
@@ -45,7 +46,7 @@ for (const w of all) {
   words.push(w);
 }
 
-/* ---------- 驗證 ---------- */
+/* ---------- 驗證單詞資料 ---------- */
 const errors = [];
 const required = ['id', 'word', 'phonetic', 'pos', 'zh', 'def', 'example', 'exampleZh'];
 for (const w of words) {
@@ -73,12 +74,54 @@ const byPos = words.reduce((acc, w) => {
   return acc;
 }, {});
 
+/* ---------- 驗證頁面（編碼 + 必要引用） ---------- */
+const MOJIBAKE = /[ÃÂåæçèéêëìîïðñòóôõöøùúûüýþ][\u0080-\u00bf\u2018-\u201d]/;
+
+function readPage(rel) {
+  const file = join(ROOT, rel);
+  if (!existsSync(file)) { errors.push(`缺少頁面：${rel}`); return ''; }
+  const buf = readFileSync(file);
+  const text = buf.toString('utf8');
+  if (text.includes('\uFFFD')) errors.push(`${rel}：含有無法解碼的字元（編碼不是 UTF-8）`);
+  if (MOJIBAKE.test(text)) errors.push(`${rel}：偵測到亂碼（mojibake），請以 UTF-8 儲存`);
+  if (buf[0] === 0xEF && buf[1] === 0xBB && buf[2] === 0xBF) errors.push(`${rel}：檔案帶有 BOM，請存成不含 BOM 的 UTF-8`);
+  return text;
+}
+
+const landing = readPage('index.html');
+const appPage = readPage('app.html');
+
+// 介紹頁：要有行銷內容、連到 App、引用自己的樣式
+const landingMust = ['css/site.css', 'app.html', 'favicon.svg', 'lang="zh-Hant"', '<h1'];
+for (const ref of landingMust) {
+  if (landing && !landing.includes(ref)) errors.push(`index.html 缺少 ${ref}`);
+}
+const landingSections = ['#features', '#how', '#levels', '#screens', '#faq'];
+for (const ref of landingSections) {
+  if (landing && !landing.includes(ref)) errors.push(`index.html 缺少區塊連結 ${ref}`);
+}
+
+// App：原有功能必須完整保留
+const appMust = [
+  'css/style.css', 'js/app.js',
+  'data/words.js', 'data/words-extra.js', 'data/words-extra2.js',
+  'favicon.svg', 'site.webmanifest',
+  'id="view"', 'id="settingsOverlay"', 'id="streakCount"',
+];
+for (const ref of appMust) {
+  if (appPage && !appPage.includes(ref)) errors.push(`app.html 缺少 ${ref}（原有功能可能被破壞）`);
+}
+
+// 兩個頁面都要能回首頁 / 進入 App
+if (appPage && !appPage.includes('href="index.html"')) errors.push('app.html 缺少回到介紹頁的連結');
+
 /* ---------- 輸出靜態網站 ---------- */
 rmSync(OUT, { recursive: true, force: true });
 mkdirSync(OUT, { recursive: true });
 
 const assets = [
   'index.html',
+  'app.html',
   'css',
   'js',
   'data',
@@ -93,13 +136,32 @@ for (const asset of assets) {
   copied.push(asset);
 }
 
-/* ---------- 最小可用性檢查（HTML 是否引用所有資料與資源） ---------- */
-const html = readFileSync(join(OUT, 'index.html'), 'utf8');
-const mustReference = ['css/style.css', 'js/app.js', 'data/words.js', 'data/words-extra.js', 'data/words-extra2.js', 'favicon.svg', 'site.webmanifest'];
-for (const ref of mustReference) {
-  if (!html.includes(ref)) errors.push(`index.html 沒有引用 ${ref}`);
+// 只部署介紹頁實際用到的截圖，避免把整個 docs 資料夾推上線
+const usedShots = ['03-card-back.png', '07-quiz-question.png', '05-stats.png', '10-library.png', 'mobile-02-card-back.png'];
+mkdirSync(join(OUT, 'docs', 'screenshots'), { recursive: true });
+for (const shot of usedShots) {
+  const src = join(ROOT, 'docs', 'screenshots', shot);
+  if (!existsSync(src)) { errors.push(`缺少截圖 docs/screenshots/${shot}`); continue; }
+  cpSync(src, join(OUT, 'docs', 'screenshots', shot));
+  copied.push(`docs/screenshots/${shot}`);
 }
-if (!html.includes('lang="zh-Hant"')) errors.push('index.html 缺少 lang="zh-Hant"');
+
+/* ---------- 輸出後的完整性檢查 ---------- */
+const outChecks = [
+  '_site/index.html',
+  '_site/app.html',
+  '_site/css/site.css',
+  '_site/css/style.css',
+  '_site/js/app.js',
+  '_site/data/words.js',
+  '_site/site.webmanifest',
+];
+for (const rel of outChecks) {
+  if (!existsSync(join(ROOT, rel))) errors.push(`輸出缺少 ${rel}`);
+}
+for (const shot of usedShots) {
+  if (!existsSync(join(OUT, 'docs', 'screenshots', shot))) errors.push(`輸出缺少截圖 docs/screenshots/${shot}`);
+}
 
 if (errors.length) {
   console.error('\n✖ 網站檢查失敗：');
@@ -112,6 +174,7 @@ const stats = {
   base: base.length,
   byLevel,
   byPos,
+  pages: ['index.html（介紹網站）', 'app.html（學習 App）'],
   builtAt: new Date().toISOString(),
   files: copied,
 };
@@ -121,4 +184,5 @@ console.log('✔ 單詞資料驗證通過');
 console.log(`  單詞總數：${words.length}`);
 console.log(`  難度分布：基礎 ${byLevel[1] || 0} / 中階 ${byLevel[2] || 0} / 進階 ${byLevel[3] || 0} / 高階 ${byLevel[4] || 0}`);
 console.log(`  詞性分布：${JSON.stringify(byPos)}`);
+console.log('✔ 頁面驗證通過（UTF-8、必要引用、原有功能）');
 console.log(`✔ 已輸出靜態網站到 _site（${copied.join('、')}）`);

@@ -1,12 +1,13 @@
 {
   "name": "wordlab",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "private": true,
-  "description": "WordLab 單詞工坊 — 用間隔重複法學習英文單詞的離線網頁 App",
+  "description": "WordLab 單詞工坊 — 英文單詞學習 App 與商業介紹網站",
   "type": "module",
   "scripts": {
     "build": "node scripts/build.mjs",
     "test": "node scripts/smoke-test.mjs",
+    "capture": "node scripts/capture-screenshots.mjs",
     "start": "node scripts/serve.mjs"
   },
   "devDependencies": {
