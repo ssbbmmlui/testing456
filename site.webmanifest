@@ -3,7 +3,7 @@
   "short_name": "WordLab",
   "description": "用間隔重複法學習英文單詞，自動記錄進度並出題測驗。",
   "lang": "zh-Hant",
-  "start_url": "./",
+  "start_url": "./app.html",
   "scope": "./",
   "display": "standalone",
   "background_color": "#f7f4ee",
