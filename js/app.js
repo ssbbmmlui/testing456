@@ -412,11 +412,26 @@
     return count;
   }
 
+  /**
+   * 穩定的字串雜湊（FNV-1a 32-bit）。
+   * 用來為單詞產生固定的「隨機」次序：每次開啟、每部裝置都一樣，
+   * 但不會像字母順序那樣連續出現同一個開頭的字。
+   */
+  function hashRank(str) {
+    let h = 0x811c9dc5;
+    for (let i = 0; i < str.length; i++) {
+      h ^= str.charCodeAt(i);
+      h = Math.imul(h, 0x01000193);
+    }
+    return h >>> 0;
+  }
+
   function newWordsPool() {
-    // 依序：基礎 → 中階 → 進階 → 高階
+    // 先依難度（基礎 → 中階 → 進階 → 高階），同級內用固定雜湊排序，
+    // 讓新詞分散在不同字母與詞性，而不是 a、b、c 一路背下去。
     const pref = Number(state.settings.newWordLevel) || 0;
     const list = WORDS.filter(w => !state.progress[w.id] && (!pref || w.level === pref));
-    list.sort((a, b) => (a.level - b.level) || a.word.localeCompare(b.word));
+    list.sort((a, b) => (a.level - b.level) || (hashRank(a.id) - hashRank(b.id)));
     return list;
   }
 
