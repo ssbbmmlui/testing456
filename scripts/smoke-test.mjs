@@ -140,6 +140,21 @@ ok('四個難度都存在', await page.evaluate(() => {
 }));
 ok('App 有回到介紹頁的連結', (await page.locator('footer a[href="index.html"]').count()) === 1);
 
+/* 新詞順序：不可是字母順序，且次序要穩定 */
+const orderA = await page.evaluate(() => window.__WORDLAB__.newWordsPool().slice(0, 10).map(w => w.word));
+const alphabetical = JSON.stringify(orderA) === JSON.stringify([...orderA].sort());
+ok('新詞不是字母順序', !alphabetical, orderA.join(' → '));
+const sameInitialRun = (() => {
+  let max = 1, run = 1;
+  for (let i = 1; i < orderA.length; i++) {
+    if (orderA[i][0] === orderA[i - 1][0]) { run++; max = Math.max(max, run); } else run = 1;
+  }
+  return max;
+})();
+ok('新詞不會連續同字母', sameInitialRun <= 3, `連續同字母最多 ${sameInitialRun} 個`);
+const orderB = await page.evaluate(() => window.__WORDLAB__.newWordsPool().slice(0, 10).map(w => w.word));
+ok('新詞順序穩定（可重現）', JSON.stringify(orderA) === JSON.stringify(orderB), orderB.slice(0, 5).join(', '));
+
 // 開始學習
 await page.fill('#obName', '測試員');
 await page.click('#obStart');
