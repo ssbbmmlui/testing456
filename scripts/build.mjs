@@ -9,35 +9,40 @@
  * 用法：
  *   node scripts/build.mjs
  */
-import { readFileSync, writeFileSync, mkdirSync, cpSync, rmSync, existsSync, statSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, cpSync, rmSync, existsSync, readdirSync } from 'node:fs';
 import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import vm from 'node:vm';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = join(ROOT, '_site');
+const TARGET_WORDS = 700;
 
-/* ---------- 讀取資料 ---------- */
+/* ---------- 讀取資料（data/ 下所有 .js 檔） ---------- */
 const sandbox = { window: {} };
 vm.createContext(sandbox);
 
-function loadScript(rel) {
-  const file = join(ROOT, rel);
-  if (!existsSync(file)) throw new Error(`缺少檔案：${rel}`);
-  vm.runInContext(readFileSync(file, 'utf8'), sandbox, { filename: rel });
-  return sandbox.window;
+const dataFiles = readdirSync(join(ROOT, 'data')).filter(f => f.endsWith('.js')).sort();
+
+function loadData(file) {
+  const rel = `data/${file}`;
+  const abs = join(ROOT, rel);
+  if (!existsSync(abs)) throw new Error(`缺少檔案：${rel}`);
+  vm.runInContext(readFileSync(abs, 'utf8'), sandbox, { filename: rel });
 }
 
-loadScript('data/words.js');
-const base = sandbox.window.WORDS || [];
-loadScript('data/words-extra.js');
-loadScript('data/words-extra2.js');
+for (const f of dataFiles) loadData(f);
 
-const all = [...base, ...(sandbox.window.WORDS_EXTRA || []), ...(sandbox.window.WORDS_EXTRA2 || [])];
+// 依 app.js 相同規則合併：所有 window.WORDS* 陣列，依 id / word 去重
+const sources = Object.keys(sandbox.window)
+  .filter(k => /^WORDS(_|$)/.test(k) && Array.isArray(sandbox.window[k]))
+  .sort()
+  .reduce((acc, k) => acc.concat(sandbox.window[k]), []);
+
 const words = [];
 const seenId = new Set();
 const seenWord = new Set();
-for (const w of all) {
+for (const w of sources) {
   if (!w || !w.id || !w.word) continue;
   const key = String(w.word).toLowerCase();
   if (seenId.has(w.id) || seenWord.has(key)) continue;
@@ -58,7 +63,12 @@ for (const w of words) {
   if (!Array.isArray(w.tags) || w.tags.length === 0) errors.push(`${w.id}：缺少 tags`);
   if (!/[\u4e00-\u9fff]/.test(w.zh || '')) errors.push(`${w.id}：中文釋義缺少中文字`);
 }
-if (words.length < 300) errors.push(`單詞太少：${words.length}`);
+if (words.length < TARGET_WORDS) errors.push(`單詞不足：目前 ${words.length}，目標 ${TARGET_WORDS}`);
+
+const byLevelPreview = words.reduce((acc, w) => (acc[w.level] = (acc[w.level] || 0) + 1, acc), {});
+for (const lv of [1, 2, 3, 4]) {
+  if (!byLevelPreview[lv]) errors.push(`難度 ${lv} 沒有任何單詞`);
+}
 
 if (errors.length) {
   console.error(`\n✖ 資料驗證失敗（${errors.length} 項）：`);
@@ -104,7 +114,7 @@ for (const ref of landingSections) {
 // App：原有功能必須完整保留
 const appMust = [
   'css/style.css', 'js/app.js',
-  'data/words.js', 'data/words-extra.js', 'data/words-extra2.js',
+  ...dataFiles.map(f => `data/${f}`),
   'favicon.svg', 'site.webmanifest',
   'id="view"', 'id="settingsOverlay"', 'id="streakCount"',
 ];
@@ -171,7 +181,7 @@ if (errors.length) {
 
 const stats = {
   words: words.length,
-  base: base.length,
+  dataFiles,
   byLevel,
   byPos,
   pages: ['index.html（介紹網站）', 'app.html（學習 App）'],

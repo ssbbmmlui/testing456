@@ -8,15 +8,19 @@
   /* ==================================================================
      0. 常數與工具
      ================================================================== */
-  const APP_VERSION = '1.1.0';
+  const APP_VERSION = '1.3.0';
   const STORAGE_KEY = 'wordlab.v1';
   const MINUTE = 60 * 1000;
   const DAY = 24 * 60 * MINUTE;
 
   const WORDS = (() => {
-    const merged = [].concat(window.WORDS || [], window.WORDS_EXTRA || [], window.WORDS_EXTRA2 || []);
+    // 自動合併所有 window.WORDS* 陣列（data/ 下每個檔案各掛一個）
+    const sources = Object.keys(window)
+      .filter(k => /^WORDS(_|$)/.test(k) && Array.isArray(window[k]))
+      .sort()
+      .reduce((acc, k) => acc.concat(window[k]), []);
     const seenId = new Set(), seenWord = new Set(), out = [];
-    for (const w of merged) {
+    for (const w of sources) {
       const key = String(w.word || '').toLowerCase();
       if (!w || !w.id || seenId.has(w.id) || seenWord.has(key)) continue;
       seenId.add(w.id); seenWord.add(key); out.push(w);
