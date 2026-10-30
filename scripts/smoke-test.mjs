@@ -133,7 +133,7 @@ await wait(600);
 
 ok('App 載入（引導頁）', (await page.locator('.onboard').count()) === 1);
 const wordCount = await page.evaluate(() => window.__WORDLAB__?.words.length ?? 0);
-ok('App 載入 496 個單詞', wordCount === 496, `${wordCount} 個`);
+ok('App 載入 700 個單詞', wordCount === 700, `${wordCount} 個`);
 ok('四個難度都存在', await page.evaluate(() => {
   const lv = new Set(window.__WORDLAB__.words.map(w => w.level));
   return [1, 2, 3, 4].every(x => lv.has(x));
